@@ -23,14 +23,19 @@
     [super viewDidLoad];
     _tableView.dataSource = self;
     // Do any additional setup after loading the view, typically from a nib.
+    [self setUpCoreData];
     [self fetchData];
+}
+
+- (void)setUpCoreData {
+    AppDelegate *appDelegate = UIApplication.sharedApplication.delegate;
+    context = appDelegate.persistentContainer.viewContext;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 - (IBAction)add:(UIBarButtonItem *)sender {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"New Name" message:@"Add a new Name" preferredStyle: UIAlertControllerStyleAlert];
@@ -47,8 +52,6 @@
 }
 
 -(void)saveWithName:(NSString *)name {
-    AppDelegate *appDelegate = UIApplication.sharedApplication.delegate;
-    NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Person" inManagedObjectContext:context];
     NSManagedObject *personObject = [[NSManagedObject alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:context];
     [personObject setValue:name forKeyPath:@"name"];
@@ -56,8 +59,6 @@
 }
 
 -(void)fetchData {
-    AppDelegate *appDelegate = UIApplication.sharedApplication.delegate;
-    NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
     personList = [context executeFetchRequest:fetchRequest error:nil];
     NSLog(@"%@", personList);
